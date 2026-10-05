@@ -21,8 +21,12 @@ public class CalculateurViewModel : BaseViewModel
 	public DateTime DateNaissance
 	{
 		get => _dateNaissance;
-		set => SetField(ref _dateNaissance, value);
+		set { if (SetField(ref _dateNaissance, value))
+				  CalculerCommand.Rafraichir(); }
 	}
+
+	// Borne superieure du DatePicker : on ne nait pas dans le futur.
+	public DateTime DateMax => DateTime.Today;
 
 	public string Resultat
 	{
@@ -43,7 +47,14 @@ public class CalculateurViewModel : BaseViewModel
 	{
 		CalculerCommand = new RelayCommand(
 			Calculer,
-			() => !string.IsNullOrWhiteSpace(Nom));
+			PeutCalculer);
+	}
+
+	// Calcul possible seulement avec un nom et une date non future.
+	private bool PeutCalculer()
+	{
+		return !string.IsNullOrWhiteSpace(Nom)
+			&& DateNaissance.Date <= DateTime.Today;
 	}
 
 	// La logique metier : aucun controle d interface ici.

@@ -10,7 +10,8 @@
             <Entry Text="{Binding Nom, Mode=TwoWay}"
                    Placeholder="Votre nom"/>
             <Label Text="Date de naissance" FontSize="16"/>
-            <DatePicker Date="{Binding DateNaissance}"/>
+            <DatePicker Date="{Binding DateNaissance}"
+                        MaximumDate="{Binding DateMax}"/>
             <Button Text="Calculer"
                     Command="{Binding CalculerCommand}"/>
             <Label Text="{Binding Resultat}" FontSize="20"
