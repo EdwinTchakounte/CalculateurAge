@@ -10,6 +10,7 @@ public class CalculateurViewModel : BaseViewModel
 	private string _resultat = "";
 	private bool _resultatVisible;
 	private string _statut = "";
+	private string _prochainAnniversaire = "";
 
 	// Age de la majorite civile.
 	private const int AgeMajorite = 18;
@@ -51,6 +52,13 @@ public class CalculateurViewModel : BaseViewModel
 		set => SetField(ref _statut, value);
 	}
 
+	// Nombre de jours restants avant le prochain anniversaire.
+	public string ProchainAnniversaire
+	{
+		get => _prochainAnniversaire;
+		set => SetField(ref _prochainAnniversaire, value);
+	}
+
 	// Liee a Button.Command dans le XAML.
 	public RelayCommand CalculerCommand { get; }
 
@@ -78,6 +86,23 @@ public class CalculateurViewModel : BaseViewModel
 
 		Resultat = $"{Nom}, vous avez {age} ans";
 		Statut = age >= AgeMajorite ? "Majeur" : "Mineur";
+
+		int jours = JoursAvantAnniversaire(DateNaissance);
+		ProchainAnniversaire = jours == 0
+			? "Joyeux anniversaire !"
+			: $"Prochain anniversaire dans {jours} jour(s)";
 		ResultatVisible = true;
+	}
+
+	// AddYears gere le 29 fevrier (ramene au 28 les annees non bissextiles).
+	private static int JoursAvantAnniversaire(DateTime naissance)
+	{
+		DateTime aujourdhui = DateTime.Today;
+		DateTime prochain = naissance.Date
+			.AddYears(aujourdhui.Year - naissance.Year);
+		if (prochain < aujourdhui)
+			prochain = naissance.Date
+				.AddYears(aujourdhui.Year - naissance.Year + 1);
+		return (prochain - aujourdhui).Days;
 	}
 }
