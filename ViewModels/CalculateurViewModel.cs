@@ -1,10 +1,13 @@
 using System.Collections.ObjectModel;
+using CalculateurAge.Services;
 
 namespace CalculateurAge.ViewModels;
 
 // Contient l ETAT de l ecran et les ACTIONS possibles.
 public class CalculateurViewModel : BaseViewModel
 {
+	private readonly INavigationService? _navigation;
+
 	// Champs prives : la vraie donnee.
 	private string _nom = "";
 	private DateTime _dateNaissance
@@ -44,7 +47,8 @@ public class CalculateurViewModel : BaseViewModel
 	public bool ResultatVisible
 	{
 		get => _resultatVisible;
-		set => SetField(ref _resultatVisible, value);
+		set { if (SetField(ref _resultatVisible, value))
+				  VoirDetailCommand.Rafraichir(); }
 	}
 
 	// "Majeur" ou "Mineur", calcule par le ViewModel.
@@ -71,12 +75,19 @@ public class CalculateurViewModel : BaseViewModel
 	// Remet tous les champs a zero.
 	public RelayCommand EffacerCommand { get; }
 
-	public CalculateurViewModel()
+	// Ouvre ResultatPage avec un ResultatViewModel deja rempli.
+	public RelayCommand VoirDetailCommand { get; }
+
+	public CalculateurViewModel(INavigationService? navigation = null)
 	{
+		_navigation = navigation;
 		CalculerCommand = new RelayCommand(
 			Calculer,
 			PeutCalculer);
 		EffacerCommand = new RelayCommand(Effacer);
+		VoirDetailCommand = new RelayCommand(
+			VoirDetail,
+			() => ResultatVisible && _navigation != null);
 	}
 
 	// Calcul possible seulement avec un nom et une date non future.
@@ -105,6 +116,13 @@ public class CalculateurViewModel : BaseViewModel
 
 		Historique.Insert(0,
 			$"{DateTime.Now:HH:mm} - {Nom} : {age} ans ({Statut})");
+	}
+
+	private async void VoirDetail()
+	{
+		if (_navigation == null) return;
+		await _navigation.AllerVersResultatAsync(new ResultatViewModel(
+			Resultat, Statut, ProchainAnniversaire, _navigation));
 	}
 
 	private void Effacer()

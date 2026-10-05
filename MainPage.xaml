@@ -23,6 +23,8 @@
                    IsVisible="{Binding ResultatVisible}"/>
             <Label Text="{Binding ProchainAnniversaire}" FontSize="16"
                    IsVisible="{Binding ResultatVisible}"/>
+            <Button Text="Voir le detail"
+                    Command="{Binding VoirDetailCommand}"/>
 
             <Label Text="Historique" FontSize="16"
                    FontAttributes="Bold" Margin="0,20,0,0"/>
