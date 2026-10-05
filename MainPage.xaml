@@ -14,6 +14,8 @@
                         MaximumDate="{Binding DateMax}"/>
             <Button Text="Calculer"
                     Command="{Binding CalculerCommand}"/>
+            <Button Text="Effacer"
+                    Command="{Binding EffacerCommand}"/>
             <Label Text="{Binding Resultat}" FontSize="20"
                    IsVisible="{Binding ResultatVisible}"/>
             <Label Text="{Binding Statut}" FontSize="18"

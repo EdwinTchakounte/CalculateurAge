@@ -62,11 +62,15 @@ public class CalculateurViewModel : BaseViewModel
 	// Liee a Button.Command dans le XAML.
 	public RelayCommand CalculerCommand { get; }
 
+	// Remet tous les champs a zero.
+	public RelayCommand EffacerCommand { get; }
+
 	public CalculateurViewModel()
 	{
 		CalculerCommand = new RelayCommand(
 			Calculer,
 			PeutCalculer);
+		EffacerCommand = new RelayCommand(Effacer);
 	}
 
 	// Calcul possible seulement avec un nom et une date non future.
@@ -92,6 +96,16 @@ public class CalculateurViewModel : BaseViewModel
 			? "Joyeux anniversaire !"
 			: $"Prochain anniversaire dans {jours} jour(s)";
 		ResultatVisible = true;
+	}
+
+	private void Effacer()
+	{
+		Nom = "";
+		DateNaissance = DateTime.Today.AddYears(-20);
+		Resultat = "";
+		Statut = "";
+		ProchainAnniversaire = "";
+		ResultatVisible = false;
 	}
 
 	// AddYears gere le 29 fevrier (ramene au 28 les annees non bissextiles).
